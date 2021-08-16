@@ -11,7 +11,8 @@ import streamlit.components.v1 as components
 # pio.templates
 # pio.templates.default = "simple_white"
 # load model 
-# import joblib
+import joblib
+import sklearn
 
 # linear programming
 import pulp
@@ -44,18 +45,26 @@ def main():
             dff = df[df['BU'].isin([umkm])]
             st.subheader(f'Lokasi Usaha: {dff.Nama_pasar.values[0]}')
             st.subheader(f'Tingkat Efisiensi UMKM: {int(dff.Efisiensi.mean()*10000)/100} %')
-            st.subheader(f'Omset UMKM: {int(dff.omset.sum())/1000000} Million Rupiah')
+            st.subheader(f'Omset UMKM: Rp {int(dff.omset.sum()):,d}')
             # st.number_input(label='Omset UMKM',value=int(dff.omset.sum()), min_value=0,max_value=1000000000000)
+            s1='Beban_UmumAdm'
+            s2='Beban_Penjualan'
+            s3='Beban_Lainnya'
 
             if int(dff.Efisiensi.mean()*100) >84.9:
-                st.subheader('UMKM eligible mendapatkan kredit')
-                with st.beta_expander('Efficiency Analysis', expanded=False):
-                    if st.button('Prediksi Maksimum Pinjaman'):
-                        pass
+                st.subheader('UMKM layak mendapatkan kredit')
+                model= open("lbst_umk.pkl", "rb")
+                huber=joblib.load(model)
+                dfvalues = dff[['omset',s1,s2,s3,'Efisiensi']]
+                # dfvalues = pd.DataFrame(list(zip([sl],[sw],[pl],[pw])),columns =['lengkap', 'tepatwaktu', 'ketsesuai', 'adapembayaran'])
+                # input_variables = np.array(dfvalues[['lengkap', 'tepatwaktu', 'ketsesuai', 'adapembayaran']])
+                input_variables = np.array(dfvalues)
+                with st.beta_expander('Maksimum Bantuan Pinjaman', expanded=False):
+                    if st.button('Prediksi Maksimum Cicilan'):
+                        prediction = huber.predict(input_variables)
+                        st.title(f'Maksimum Cicilan perbulan: Rp {int(prediction):,d}')
+                        
             else:
-                s1='Beban_UmumAdm'
-                s2='Beban_Penjualan'
-                s3='Beban_Lainnya'
                 
                 dfs = dff[[s1,s2,s3,'Total_beban','BU']]
                 dfs[s1] = dfs[s1]/dfs['Total_beban']
@@ -159,9 +168,11 @@ def main():
                                         mode = "number+delta",
                                         # value = status*100,
                                         value = int(growth*100)/100,
+                                        # value = f'{int(growth):,d}',
                                         title = {"text": "Prediksi Omset dengan Alokasi Baru:"},
                                         delta = {'reference': int(dff.omset.mean()*100)/100, 'relative': False},
-                                        # domain = {'x': [0, 0.5], 'y': [0.6, 1]},
+                                        # delta = {'reference': f'{int(dff.omset.mean()):,d}', 'relative': False},
+                                        # # domain = {'x': [0, 0.5], 'y': [0.6, 1]},
                                         domain = {'x': [0, 0.5], 'y': [0, 0.4]},
                                         ))
                         fig3.add_trace(go.Indicator(
