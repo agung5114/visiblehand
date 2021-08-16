@@ -184,6 +184,11 @@ def main():
                                         ))
                         # fig3.update_layout(width=200)
                         st.plotly_chart(fig3)
+                    st.subheader(f'Tingkat Alokasi Beban: {int(total)}%')
+                    with st.beta_expander("Selisih Lebih/Kurang Beban dari Realokasi",expanded=False):
+                        excess = int(dff['Total_beban']) * (100-total)
+                        st.subheader(f'Rp {int(excess):,d}')
+                        # st.number_input(label=" ",value=excess,min_value=0.0, max_value=1000000000.0, step=10.0)
                 
 if __name__=='__main__':
     main()
