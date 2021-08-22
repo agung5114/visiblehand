@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly_express as px
 import plotly.graph_objects as go
-# from PIL import Image
+from PIL import Image
 st.set_page_config(layout='wide')
 import streamlit.components.v1 as components
 
