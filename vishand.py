@@ -87,9 +87,9 @@ def main():
             st.write('Available Programs: ')
             st.table(dfp['Kegiatan'])
             
-        dflist = df[['BU','Kab_Kota','kelayakan']]
+#         dflist = df[['BU','Kab_Kota','kelayakan']]
         st.write('Candidate List: ')
-        st.dataframe(dflist)
+        st.dataframe(df)
         
         dfk = df[df['Efisiensi']>=0.85]
         dfn = df[df['Efisiensi']<0.85]
