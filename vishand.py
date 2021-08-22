@@ -85,9 +85,10 @@ def main():
             st.plotly_chart(fig0)
         with k1:
             st.write('Available Programs: ')
-            st.table(dfp['Kegiatan'])
+            st.dataframe(dfp['Kegiatan'])
             
         dflist = df[['BU','Kab_Kota','kelayakan']]
+        st.write('Candidate List: ')
         st.dataframe(dflist)
         
         dfk = df[df['Efisiensi']>=0.85]
