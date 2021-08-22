@@ -74,14 +74,19 @@ def main():
         df = df[df['Prov'].isin([provinsi])]
         pemda = st.selectbox('City',df.Kab_APBD.unique())
         df = df[df['Kab_APBD'].isin([pemda])]
+        dfp = pd.read_excel('UMKM_APBD.xlsx')
+        dfp = dfp[dfp['Urpemda'].isin([pemda])]
         k1,k2 =st.beta_columns((3,2))
         with k2:
             fig0 = px.pie(df,names='kelayakan',values='Efisiensi',hole=0.6)
             fig0.update_layout(width=400,height=300,margin=dict(l=10, r=0, t=0, b=0))
             st.plotly_chart(fig0)
         with k1:
-            dflist = df[['BU','Kab_Kota','kelayakan']]
-            st.dataframe(dflist)
+            st.write('Available Programs: ')
+            st.table(dfp['Kegiatan'])
+            
+        dflist = df[['BU','Kab_Kota','kelayakan']]
+        st.dataframe(dflist)
         
         dfk = df[df['Efisiensi']>=0.85]
         dfn = df[df['Efisiensi']<0.85]
