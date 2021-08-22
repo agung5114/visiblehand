@@ -21,7 +21,8 @@ from pulp import LpMaximize, LpProblem, LpStatus, lpSum, LpVariable
 
 def main():
     # st.title("Simulasi Realokasi Budget untuk memaksimalkan Efisiensi dan Omset")
-    # st.sidebar
+    greach= Image.open('GReach.png')
+    st.sidebar.image(greach)
     # menu = ["Sasaran Penerima Bantuan","Sebaran Program Pemerintah","Daftar Kandidat Penerima Bantuan","Pendaftaran UMKM"]
     menu = ['MSME Report and Analysis',"Government Benefits",'MSME Candidate List']
     choice = st.sidebar.selectbox("Select Menu", menu)
