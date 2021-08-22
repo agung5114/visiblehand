@@ -81,7 +81,7 @@ def main():
             st.write('Candidates Eligibility: ')
             st.write('')
             fig0 = px.pie(df,names='kelayakan',values='Efisiensi',hole=0.6)
-            fig0.update_layout(width=400,height=500,margin=dict(l=15, r=0, t=40, b=20))
+            fig0.update_layout(width=400,height=500,margin=dict(l=15, r=0, t=20, b=20))
             st.plotly_chart(fig0)
         with k1:
             st.write('Available Programs: ')
