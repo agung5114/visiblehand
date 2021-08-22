@@ -22,56 +22,54 @@ from pulp import LpMaximize, LpProblem, LpStatus, lpSum, LpVariable
 def main():
     # st.title("Simulasi Realokasi Budget untuk memaksimalkan Efisiensi dan Omset")
     # st.sidebar
-    # menu = ["Sasaran Penerima Bantuan","Sebaran Program Pemerintah","Daftar Kandidat Penerima Bantuan","Pendaftaran UMKM"]
-    menu = ['MSME Report and Analysis',"Government Benefits",'MSME Candidate List']
+    menu = ["Sasaran Penerima Bantuan","Sebaran Program Pemerintah","Daftar Kandidat Penerima Bantuan","Pendaftaran UMKM"]
     choice = st.sidebar.selectbox("Select Menu", menu)
     df = pd.read_excel('UMKM_Efisiensi.xlsx')
-    # from gsheetsdb import connect
+    from gsheetsdb import connect
 
-    # # Create a connection object.
-    # conn = connect()
+    # Create a connection object.
+    conn = connect()
 
-    # # Perform SQL query on the Google Sheet.
-    # # Uses st.cache to only rerun when the query changes or after 10 min.
-    # # @st.cache(ttl=600)
-    # def run_query(query):
-    #     rows = conn.execute(query, headers=1)
-    #     return rows
+    # Perform SQL query on the Google Sheet.
+    # Uses st.cache to only rerun when the query changes or after 10 min.
+    # @st.cache(ttl=600)
+    def run_query(query):
+        rows = conn.execute(query, headers=1)
+        return rows
 
-    # sheet_url = st.secrets["public_gsheets_url"]
-    # rows = run_query(f'SELECT * FROM "{sheet_url}"')
+    sheet_url = st.secrets["public_gsheets_url"]
+    rows = run_query(f'SELECT * FROM "{sheet_url}"')
 
-    # if choice == "Pendaftaran UMKM":
-    #     for row in rows:
-    #         st.write(f"{row.Timestamp}")
-    #         # st.write(rows)
-    #     st.text_input(label='Nama: ')
-    #     # components.html(
-    #     #     '''<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePcRyj3AM3GV0Yqpz0_29Xxhv2nhLk_MsgVJzritKPiWvVXw/viewform?embedded=true" width="640" height="809" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-    #     #     ''',
-    #     # height=809,
-    #     # width=640
-    #     # )
-    #     components.html(
-    #         '''
-    #     <div class="container" id="ff-compose"></div>
-    #     <script async defer src="https://formfacade.com/include/109706827221839419224/form/1FAIpQLSePcRyj3AM3GV0Yqpz0_29Xxhv2nhLk_MsgVJzritKPiWvVXw/bootstrap.js?div=ff-compose"></script>
-    #     ''',
-    #     height=809,
-    #     width=640
-    #     )
-    # elif choice == "Daftar Kandidat Penerima Bantuan":
-    if choice == 'MSME Candidate List':
+    if choice == "Pendaftaran UMKM":
+        for row in rows:
+            st.write(f"{row.Timestamp}")
+            # st.write(rows)
+        st.text_input(label='Nama: ')
+        # components.html(
+        #     '''<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePcRyj3AM3GV0Yqpz0_29Xxhv2nhLk_MsgVJzritKPiWvVXw/viewform?embedded=true" width="640" height="809" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+        #     ''',
+        # height=809,
+        # width=640
+        # )
+        components.html(
+            '''
+        <div class="container" id="ff-compose"></div>
+        <script async defer src="https://formfacade.com/include/109706827221839419224/form/1FAIpQLSePcRyj3AM3GV0Yqpz0_29Xxhv2nhLk_MsgVJzritKPiWvVXw/bootstrap.js?div=ff-compose"></script>
+        ''',
+        height=809,
+        width=640
+        )
+    elif choice == "Daftar Kandidat Penerima Bantuan":
         layak = []
         for k in df['Efisiensi'].tolist():
             if k>=0.85:
-                layak.append('Eligible')
+                layak.append('memenuhi kelayakan')
             else:
-                layak.append('Ineligible')
+                layak.append('tidak memenuhi')
         df['kelayakan'] = layak
-        provinsi = st.selectbox('Province',df.Prov.unique())
+        provinsi = st.selectbox('Pilih Provinsi',df.Prov.unique())
         df = df[df['Prov'].isin([provinsi])]
-        pemda = st.selectbox('City',df.Kab_APBD.unique())
+        pemda = st.selectbox('Pilih Pemda',df.Kab_APBD.unique())
         df = df[df['Kab_APBD'].isin([pemda])]
         k1,k2 =st.beta_columns((3,2))
         with k2:
@@ -101,49 +99,47 @@ def main():
             b64 = base64.b64encode(val)  # val looks like b'...'
             return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{file}.xlsx">{name}</a>' # decode b'abc' => abc
 
-        st.markdown(get_table_download_link(dfk,'Candidate List','Download Candidate List'), unsafe_allow_html=True)
-        st.markdown(get_table_download_link(dfn,'Non-Candidate List','Download Non-Candidate List'), unsafe_allow_html=True)
+        st.markdown(get_table_download_link(dfk,'daftar_kandidat','Download Daftar Kandidat Penerima Bantuan'), unsafe_allow_html=True)
+        st.markdown(get_table_download_link(dfn,'daftar_nonkandidat','Download Daftar Non Kandidat Penerima Bantuan'), unsafe_allow_html=True)
     
-    # elif choice == "Sebaran Program Pemerintah":
-    elif choice == "Government Benefits":
+    elif choice == "Sebaran Program Pemerintah":
         components.html(
             '''<div class='tableauPlaceholder' id='viz1629105909629' style='position: relative'><noscript><a href='#'><img alt='Dashboard Pemberdayaan UMKM ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Da&#47;DashboardUMKM&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='DashboardUMKM&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Da&#47;DashboardUMKM&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1629105909629');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';} else { vizElement.style.width='100%';vizElement.style.height='1127px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>''',
         height=1150,
         width=1280
         )
-    # elif choice == "Sasaran Penerima Bantuan":
-    elif choice == 'MSME Report and Analysis':
-        st.subheader('Eligibily Check And Efficiency Strategy Recommendation')
-        provinsi = st.sidebar.selectbox('Province',df.Prov.unique())
+    elif choice == "Sasaran Penerima Bantuan":
+        st.subheader('Cek Kelayakan Penerima Bantuan dan Rekomendasi Strategi Efisiensi')
+        provinsi = st.sidebar.selectbox('Pilih Provinsi',df.Prov.unique())
         df = df[df['Prov'].isin([provinsi])]
-        pemda = st.sidebar.selectbox('City',df.Kab_APBD.unique())
+        pemda = st.sidebar.selectbox('Pilih Pemda',df.Kab_APBD.unique())
         df = df[df['Kab_APBD'].isin([pemda])]
-        umkm = st.sidebar.selectbox('Choose MSME Name',['All']+df.BU.unique().tolist())
+        umkm = st.sidebar.selectbox('Pilih UMKM',['All']+df.BU.unique().tolist())
         st.title(umkm)
         if umkm=='All':
-            st.write('Please Choose MSME')
+            st.write('Silakan Pilih UMKM')
         else:
             dff = df[df['BU'].isin([umkm])]
-            st.subheader(f'Location: {dff.Nama_pasar.values[0]}')
-            st.subheader(f'Eficiency Rate: {int(dff.Efisiensi.mean()*10000)/100} %')
-            st.subheader(f'Total Revenue: Rp {int(dff.omset.sum()):,d}')
+            st.subheader(f'Lokasi Usaha: {dff.Nama_pasar.values[0]}')
+            st.subheader(f'Tingkat Efisiensi UMKM: {int(dff.Efisiensi.mean()*10000)/100} %')
+            st.subheader(f'Omset UMKM: Rp {int(dff.omset.sum()):,d}')
             # st.number_input(label='Omset UMKM',value=int(dff.omset.sum()), min_value=0,max_value=1000000000000)
             s1='Beban_UmumAdm'
             s2='Beban_Penjualan'
             s3='Beban_Lainnya'
 
             if int(dff.Efisiensi.mean()*100) >84.9:
-                st.subheader('Eligible for Government Benefits')
+                st.subheader('UMKM layak mendapatkan kredit')
                 model= open("lbst_umk.pkl", "rb")
                 huber=joblib.load(model)
                 dfvalues = dff[['omset',s1,s2,s3,'Efisiensi']]
                 # dfvalues = pd.DataFrame(list(zip([sl],[sw],[pl],[pw])),columns =['lengkap', 'tepatwaktu', 'ketsesuai', 'adapembayaran'])
                 # input_variables = np.array(dfvalues[['lengkap', 'tepatwaktu', 'ketsesuai', 'adapembayaran']])
                 input_variables = np.array(dfvalues)
-                with st.beta_expander('Maximum Fund can be claimed', expanded=False):
-                    if st.button('Prediction of monthly installment ability'):
+                with st.beta_expander('Maksimum Bantuan Pinjaman', expanded=False):
+                    if st.button('Prediksi Maksimum Cicilan'):
                         prediction = huber.predict(input_variables)
-                        st.title(f'Maximum Installment: Rp {int(prediction):,d}')
+                        st.title(f'Maksimum Cicilan perbulan: Rp {int(prediction):,d}')
                         
             else:
                 
@@ -157,7 +153,7 @@ def main():
                 top = dflp['Efisiensi'].max()
                 # st.write(top)
                 dflp = dflp[dflp['Efisiensi']>=top-0.05]
-                with st.beta_expander('Frontier MSME in the Area', expanded=False):
+                with st.beta_expander('Daftar UMKM Frontier Wilayah', expanded=False):
                     st.write(dflp[['BU','Prov','Kab_APBD','Efisiensi','omset']])
                 # dflp = dflp.replace(to_replace=0,value=np.NAN)
                 kolom = dfm.variable.unique().tolist()
@@ -169,7 +165,7 @@ def main():
                 fig.add_trace(go.Box(y=f2,name=s2))
                 fig.add_trace(go.Box(y=f3,name=s3))
                 fig.add_trace(go.Scatter(x=kolom, y=dfm['value'],mode='lines',name=umkm))
-                fig.update_layout(width=900,height=600,title="Comparison with Frontier MSME")
+                fig.update_layout(width=900,height=600,title="Perbandingan UMKM Terpilih Dengan Frontier Wilayah")
                 st.plotly_chart(fig)
 
                 with st.beta_expander('Efficiency Analysis', expanded=False):
@@ -220,8 +216,8 @@ def main():
                 prob += (efscore >=0, "minEff")
 
                 # Solve the problem
-                st.write("Calculation for optimum allocation")
-                if st.button("Click to Run"):
+                st.write("Penghitungan Alokasi Beban Paling Efisien")
+                if st.button("Klik untuk Jalankan"):
                     status = prob.solve()
                     p1 =  pulp.value(v1)
                     p2 =  pulp.value(v2)
@@ -250,7 +246,7 @@ def main():
                                         # value = status*100,
                                         value = int(growth*100)/100,
                                         # value = f'{int(growth):,d}',
-                                        title = {"text": "Revenue Prediction:"},
+                                        title = {"text": "Prediksi Omset dengan Alokasi Baru:"},
                                         delta = {'reference': int(dff.omset.mean()*100)/100, 'relative': False},
                                         # delta = {'reference': f'{int(dff.omset.mean()):,d}', 'relative': False},
                                         # # domain = {'x': [0, 0.5], 'y': [0.6, 1]},
@@ -260,15 +256,15 @@ def main():
                                         mode = "number+delta",
                                         value = status*100,
                                         # value = int(efficiency*10000)/100,
-                                        title = {"text": "Efficiency Score (%):"},
+                                        title = {"text": "Tingkat Efisiensi dengan Alokasi Baru(%):"},
                                         delta = {'reference': int(dff.Efisiensi.mean()*10000)/100, 'relative': False},
                                         # domain = {'x': [0, 0.5], 'y': [0, 0.4]},
                                         domain = {'x': [0, 0.5], 'y': [0.6, 1]},
                                         ))
                         # fig3.update_layout(width=200)
                         st.plotly_chart(fig3)
-                    st.subheader(f'Total Allocated Cost: {int(total)}%')
-                    with st.beta_expander("Reallocation gap",expanded=False):
+                    st.subheader(f'Tingkat Alokasi Beban: {int(total)}%')
+                    with st.beta_expander("Selisih Lebih/Kurang Beban dari Realokasi",expanded=False):
                         excess = int(dff['Total_beban']) * (100-total)
                         st.subheader(f'Rp {int(excess):,d}')
                         # st.number_input(label=" ",value=excess,min_value=0.0, max_value=1000000000.0, step=10.0)
