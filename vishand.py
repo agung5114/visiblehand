@@ -78,6 +78,8 @@ def main():
         dfp = dfp[dfp['Urpemda'].isin([pemda])]
         k1,k2 =st.beta_columns((3,2))
         with k2:
+            st.write('Candidates Eligibility: ')
+            st.write('')
             fig0 = px.pie(df,names='kelayakan',values='Efisiensi',hole=0.6)
             fig0.update_layout(width=400,height=300,margin=dict(l=10, r=0, t=0, b=0))
             st.plotly_chart(fig0)
