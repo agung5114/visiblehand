@@ -67,7 +67,7 @@ def main():
             '''
             <style>
               #wrap { width: 1020px; height: 900px; padding: 0; border: 0px solid grey; overflow: hidden; }
-              #frame { width: 900px; height: 1980px; margin-left: -10px;margin-right: 0px; margin-top: -30px; }
+              #frame { width: 900px; height: 1980px; margin-left: -5px;margin-right: 0px; margin-top: -10px; }
               #frame {
                   -ms-zoom: 1;
                   -moz-transform: scale(1);
