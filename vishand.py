@@ -21,10 +21,10 @@ from pulp import LpMaximize, LpProblem, LpStatus, lpSum, LpVariable
 
 def main():
     # st.title("Simulasi Realokasi Budget untuk memaksimalkan Efisiensi dan Omset")
-    greach= Image.open('GReach.png')
-    st.sidebar.image(greach)
+#     greach= Image.open('GReach.png')
+#     st.sidebar.image(greach)
     # menu = ["Sasaran Penerima Bantuan","Sebaran Program Pemerintah","Daftar Kandidat Penerima Bantuan","Pendaftaran UMKM"]
-    menu = ['MSME Report and Analysis',"Government Benefits",'MSME Candidate List']
+    menu = ['MSME Report and Analysis',"Government Benefits",'MSME Candidate List','OCA Dashboard']
     choice = st.sidebar.selectbox("Select Menu", menu)
     df = pd.read_excel('UMKM_Efisiensi.xlsx')
     # from gsheetsdb import connect
@@ -62,7 +62,14 @@ def main():
     #     width=640
     #     )
     # elif choice == "Daftar Kandidat Penerima Bantuan":
-    if choice == 'MSME Candidate List':
+    if choice == 'OCA Dashboard':
+        components.html(
+            ''' <iframe src ='https://dashboard.ocaindonesia.co.id/account/login'
+            </iframe>''',
+        height=1150,
+        width=1280
+        )
+    elif choice == 'MSME Candidate List':
         layak = []
         for k in df['Efisiensi'].tolist():
             if k>=0.85:
