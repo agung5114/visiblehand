@@ -64,8 +64,30 @@ def main():
     # elif choice == "Daftar Kandidat Penerima Bantuan":
     if choice == 'OCA Dashboard':
         components.html(
-            ''' <iframe src ='https://dashboard.ocaindonesia.co.id/account/login'
-            </iframe>''',
+            '''
+            <style>
+              #wrap { width: 1020px; height: 900px; padding: 0; border: 0px solid grey; overflow: hidden; }
+              #frame { width: 900px; height: 1980px; margin-left: 0px;margin-right: -15px; margin-top: -270px; }
+              #frame {
+                  -ms-zoom: 1;
+                  -moz-transform: scale(1);
+                  -moz-transform-origin: 0 0;
+                  -o-transform: scale(1);
+                  -o-transform-origin: 0 0;
+                  -webkit-transform: scale(1);
+                  -webkit-transform-origin: 0 0;
+              }
+              #frame2 { width: 1020px; height: 900px; border: 0px solid black; margin-top: -195px}
+          </style>
+          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+              
+          <div class="wrap-element" style="padding: 0; overflow: hidden;">
+            <iframe id="frame" scrolling="no" class="wrapped-iframe" gesture="media"  allow="encrypted-media" allowfullscreen = "True"
+            name="Framename" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            src="https://ukmindonesia.id/cari-program"
+            style="width: 100%;">
+            </iframe>
+            ''',
         height=1150,
         width=1280
         )
