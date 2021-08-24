@@ -67,7 +67,7 @@ def main():
             '''
             <style>
               #wrap { width: 1020px; height: 900px; padding: 0; border: 0px solid grey; overflow: hidden; }
-              #frame { width: 900px; height: 1980px; margin-left: 0px;margin-right: -15px; margin-top: -270px; }
+              #frame { width: 900px; height: 1980px; margin-left: 0px;margin-right: -15px; margin-top: -10px; }
               #frame {
                   -ms-zoom: 1;
                   -moz-transform: scale(1);
@@ -84,7 +84,7 @@ def main():
           <div class="wrap-element" style="padding: 0; overflow: hidden;">
             <iframe id="frame" scrolling="no" class="wrapped-iframe" gesture="media"  allow="encrypted-media" allowfullscreen = "True"
             name="Framename" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-            src="https://ukmindonesia.id/cari-program"
+            src="https://dashboard.ocaindonesia.co.id/"
             style="width: 100%;">
             </iframe>
             ''',
